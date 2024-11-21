@@ -122,3 +122,32 @@ func TestHandleNegativeMilliseconds(t *testing.T) {
 		})
 	}
 }
+
+
+func TestHandleNegativeFloatMilliseconds(t *testing.T) {
+	times := []float64{
+		0.0005,
+		0.3,
+	}
+
+	for _, milliseconds := range times {
+		t.Run("", func(t *testing.T) {
+			positive, err := ParseMilliseconds(milliseconds)
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+			negative, err := ParseMilliseconds(-milliseconds)
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+
+			if positive.Days != -negative.Days ||
+				positive.Hours != -negative.Hours ||
+				positive.Minutes != -negative.Minutes ||
+				positive.Seconds != -negative.Seconds ||
+				positive.Milliseconds != -negative.Milliseconds {
+				t.Errorf("negative values do not match positive values: got %v, want %v", negative, positive)
+			}
+		})
+	}
+}
