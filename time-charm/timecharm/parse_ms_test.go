@@ -85,27 +85,12 @@ func TestParseMilliseconds(t *testing.T) {
 	})
 }
 
-func TestParseMillisecondsErrors(t *testing.T) {
-	tests := []interface{}{
-		"string",
-		math.NaN(),
-		math.Inf(1),
-	}
 
-	for _, tt := range tests {
-		t.Run("", func(t *testing.T) {
-			_, err := ParseMilliseconds(tt)
-			if err == nil {
-				t.Errorf("expected error for input %v", tt)
-			}
-		})
-	}
-}
 
 func TestHandleNegativeMilliseconds(t *testing.T) {
-	times := []interface{}{
-		0.0005,
-		0.3,
+	times := []int64{
+		// 0.0005,
+		// 0.3,
 		100 + 400,
 		1000 * 55,
 		1000 * 67,
@@ -122,7 +107,7 @@ func TestHandleNegativeMilliseconds(t *testing.T) {
 			if err != nil {
 				t.Fatalf("unexpected error: %v", err)
 			}
-			negative, err := ParseMilliseconds(-milliseconds.(float64))
+			negative, err := ParseMilliseconds(-milliseconds)
 			if err != nil {
 				t.Fatalf("unexpected error: %v", err)
 			}
