@@ -1,4 +1,4 @@
 run:
-	go run .
+	go run main.go
 
-PHONY: run
+.PHONY: run

@@ -1,9 +1,9 @@
-package timecharm
-
-import (
-	"fmt"
-)
+package main
 
 func main() {
-	fmt.Println("Hello, World!")
+	// options := timecharm.Options{
+	// 	ColonNotation: true,
+	// 	Verbose:       true,
+	// }
+	// fmt.Println(timecharm.PrettyMilliseconds(1234567890, options))
 }
