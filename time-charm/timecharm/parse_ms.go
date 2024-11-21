@@ -2,6 +2,7 @@ package timecharm
 
 import (
 	"errors"
+	"fmt"
 	"math"
 )
 
@@ -46,8 +47,13 @@ func parseBigint(milliseconds int64) TimeComponents {
 	}
 }
 
-func ParseMilliseconds(milliseconds interface{}) (TimeComponents, error) {
-	switch v := milliseconds.(type) {
+func ParseMilliseconds(input interface{}) (TimeComponents, error) {
+	// Check if the input is NaN
+	if value, ok := input.(float64); ok && math.IsNaN(value) {
+		return TimeComponents{}, fmt.Errorf("input is NaN")
+	}
+
+	switch v := input.(type) {
 	case float64:
 		if !math.IsInf(v, 0) {
 			components := parseNumber(math.Abs(v))
@@ -60,9 +66,10 @@ func ParseMilliseconds(milliseconds interface{}) (TimeComponents, error) {
 			}
 			return components, nil
 		}
+	case int64:
+		return parseBigint(v), nil
 	default:
-		return parseBigint(v.(int64)), nil
+		return TimeComponents{}, errors.New("expected a number of type int64 or float64")
 	}
-
-	return TimeComponents{}, errors.New("expected a finite number or bigint")
+	return TimeComponents{}, errors.New("expected a number of type int64 or float64")
 }

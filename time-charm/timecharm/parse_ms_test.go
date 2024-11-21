@@ -151,3 +151,29 @@ func TestHandleNegativeFloatMilliseconds(t *testing.T) {
 		})
 	}
 }
+
+
+func TestParseMillisecondsErrors(t *testing.T) {
+	t.Run("string input", func(t *testing.T) {
+		_, err := ParseMilliseconds("string")
+		if err == nil {
+			t.Fatalf("expected error, got nil")
+		}
+	})
+
+	t.Run("NaN input", func(t *testing.T) {
+		_, err := ParseMilliseconds(math.NaN())
+		if err == nil {
+			t.Fatalf("expected error, got nil")
+		}
+	})
+
+	t.Run("positive infinity input", func(t *testing.T) {
+		_, err := ParseMilliseconds(math.Inf(1))
+		if err == nil {
+			t.Fatalf("expected error, got nil")
+		}
+	})
+}
+
+
