@@ -25,11 +25,18 @@ type Options struct {
 	KeepDecimalsOnWholeSeconds bool
 }
 
-func PrettyMilliseconds(milliseconds int64, options Options) string {
+func PrettyMilliseconds(milliseconds interface{}, options Options) string {
+	// Type assertion to ensure milliseconds is an int64
+	ms, ok := milliseconds.(int64)
+	if !ok {
+		// Handle the error case, e.g., return an empty string or an error message
+		return ""
+	}
+
 	sign := ""
-	if milliseconds < 0 {
+	if ms < 0 {
 		sign = "-"
-		milliseconds = -milliseconds
+		ms = -ms
 	}
 
 	if options.ColonNotation {
@@ -41,14 +48,12 @@ func PrettyMilliseconds(milliseconds int64, options Options) string {
 
 	if options.Compact {
 		options.UnitCount = 1
-		options.SeparateMilliseconds = false
-		options.FormatSubMilliseconds = false
-
-		fmt.Printf("huy vao compact options %v\n" , options)
+		options.SecondsDecimalDigits = 0
+		options.MillisecondsDecimalDigits = 0
 	}
 
 	result := []string{}
-	parsed, err := ParseMilliseconds(milliseconds)
+	parsed, err := ParseMilliseconds(ms)
 	if err != nil {
 		return ""
 	}
@@ -74,22 +79,16 @@ func PrettyMilliseconds(milliseconds int64, options Options) string {
 
 	if !options.HideSeconds {
 
-		if options.SeparateMilliseconds || options.FormatSubMilliseconds || (!options.ColonNotation && milliseconds < 1000) {
+		if options.SeparateMilliseconds || options.FormatSubMilliseconds || (!options.ColonNotation && ms < 1000) {
 			add(parsed.Seconds, "second", "s", nil, &result, options)
 
-			fmt.Printf("huy vao options if")
-			
 			if options.FormatSubMilliseconds {
 				add(parsed.Milliseconds, "millisecond", "ms", nil, &result, options)
 				add(parsed.Microseconds, "microsecond", "µs", nil, &result, options)
 				add(parsed.Nanoseconds, "nanosecond", "ns", nil, &result, options)
 
-				fmt.Printf("huy vao format sub milliseconds")
-
 			} else {
 				millisecondsAndBelow := float64(parsed.Milliseconds) + float64(parsed.Microseconds) / 1000 + float64(parsed.Nanoseconds) / 1e6
-				
-				fmt.Printf("huy vao format sub milliseconds else: %f\n", millisecondsAndBelow)
 				
 				millisecondsDecimalDigits := 0
 				if options.MillisecondsDecimalDigits != 0 {
@@ -122,9 +121,7 @@ func PrettyMilliseconds(milliseconds int64, options Options) string {
 			
 		}  else {
 			// Calculate seconds
-			seconds := math.Mod(float64(milliseconds)/1000, 60)
-
-			fmt.Printf("huy seconds: %f\n", seconds)
+			seconds := math.Mod(float64(ms)/1000, 60)
 
 			// Determine seconds decimal digits
 			secondsDecimalDigits := 1
@@ -139,6 +136,13 @@ func PrettyMilliseconds(milliseconds int64, options Options) string {
 			secondsString := secondsFixed
 			if !options.KeepDecimalsOnWholeSeconds {
 				secondsString = strings.TrimRight(strings.TrimRight(secondsFixed, "0"), ".")
+
+				// After removing trailing zeros, we have to make sure the number
+				// of decimal digits equals the specified number of decimal digits
+				decimalPart := strings.Split(secondsString, ".")
+				if len(decimalPart) > 1 {
+					secondsString = decimalPart[0] + "." + decimalPart[1] + strings.Repeat("0", secondsDecimalDigits-len(decimalPart[1]))
+				}
 			}
 
 			// Add formatted seconds to result
@@ -160,21 +164,24 @@ func PrettyMilliseconds(milliseconds int64, options Options) string {
 	}
 
 	if options.UnitCount > 0 {
-		fmt.Printf("result before: %v\n", result)
 		result = result[:max(options.UnitCount, 1)]
-		fmt.Printf("result after: %v\n", result)
 	}
-
-	fmt.Printf("result final: %v\n", result)
 
 	return sign + strings.Join(result, separator)
 }	
 
 func floorDecimals(value float64, decimalDigits int) string {
+
+	fmt.Printf("value: %f decimalDigits: %d\n", value, decimalDigits)
+
 	factor := math.Pow(10, float64(decimalDigits))
-	flooredInterimValue := math.Floor((value * factor) + SECOND_ROUNDING_EPSILON)
-	flooredValue := math.Round(flooredInterimValue) / factor
-	return fmt.Sprintf("%.*f", decimalDigits, flooredValue)
+	flooredValue := math.Floor(value*factor+SECOND_ROUNDING_EPSILON) / factor
+
+	rs:= fmt.Sprintf("%.*f", decimalDigits, flooredValue)
+
+	fmt.Printf("rs: %s\n", rs)
+
+	return rs
 }
 
 
