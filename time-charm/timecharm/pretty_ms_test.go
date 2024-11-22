@@ -4,18 +4,13 @@ import (
 	"testing"
 )
 
-func runTests(t *testing.T, title string, defaultOptions Options, cases [][]interface{}) {
+func runTests(t *testing.T, title string, options Options, cases [][]interface{}) {
 	t.Run(title, func(t *testing.T) {
 		for _, testCase := range cases {
 			var milliseconds int64
-			var options Options
 			var expected string
 
-			if len(testCase) == 3 {
-				milliseconds, options, expected = testCase[0].(int64), testCase[1].(Options), testCase[2].(string)
-			} else {
-				milliseconds, expected = testCase[0].(int64), testCase[1].(string)
-			}
+			milliseconds, expected = testCase[0].(int64), testCase[1].(string)
 
 			result := PrettyMilliseconds(milliseconds, options)
 			if result != expected {
@@ -45,3 +40,12 @@ func TestPrettifyMilliseconds(t *testing.T) {
 	})
 }
 
+
+func TestHaveACompactOption(t *testing.T) {
+	runTests(t, "compact option", Options{Compact: true}, [][]interface{}{
+		{int64(1000 + 4), "1s"},
+		{int64(1000 * 60 * 60 * 999), "41d"},
+		{int64(1000 * 60 * 60 * 24 * 465), "1y"},
+		{int64(1000 * 60 * 67 * 24 * 465), "1y"},
+	})
+}

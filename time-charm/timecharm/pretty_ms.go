@@ -43,6 +43,8 @@ func PrettyMilliseconds(milliseconds int64, options Options) string {
 		options.UnitCount = 1
 		options.SeparateMilliseconds = false
 		options.FormatSubMilliseconds = false
+
+		fmt.Printf("huy vao compact options %v\n" , options)
 	}
 
 	result := []string{}
@@ -130,8 +132,6 @@ func PrettyMilliseconds(milliseconds int64, options Options) string {
 				secondsDecimalDigits = options.SecondsDecimalDigits
 			}
 
-
-
 			// Format seconds with specified decimal digits
 			secondsFixed := floorDecimals(float64(seconds), secondsDecimalDigits)
 
@@ -160,8 +160,12 @@ func PrettyMilliseconds(milliseconds int64, options Options) string {
 	}
 
 	if options.UnitCount > 0 {
+		fmt.Printf("result before: %v\n", result)
 		result = result[:max(options.UnitCount, 1)]
+		fmt.Printf("result after: %v\n", result)
 	}
+
+	fmt.Printf("result final: %v\n", result)
 
 	return sign + strings.Join(result, separator)
 }	
