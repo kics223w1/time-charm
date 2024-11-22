@@ -57,12 +57,12 @@ func PrettyMilliseconds(milliseconds int64, options Options) string {
 		add(hours, "hour", "h", nil, &result, options)
 	} else {
 		if options.HideYear {
+			add(parsed.Days, "day", "d", nil, &result, options)
+		} else {
 			years := days / 365
 			remainingDays := days % 365
 			add(years, "year", "y", nil, &result, options)
 			add(remainingDays, "day", "d", nil, &result, options)
-		} else {
-			add(parsed.Days, "year", "y", nil, &result, options)
 		}
 
 		add(parsed.Hours, "hour", "h", nil, &result, options)
@@ -130,6 +130,8 @@ func PrettyMilliseconds(milliseconds int64, options Options) string {
 				secondsDecimalDigits = options.SecondsDecimalDigits
 			}
 
+
+
 			// Format seconds with specified decimal digits
 			secondsFixed := floorDecimals(float64(seconds), secondsDecimalDigits)
 
@@ -152,7 +154,7 @@ func PrettyMilliseconds(milliseconds int64, options Options) string {
 		}
 	}
 
-	separator := ":"
+	separator := " "
 	if options.ColonNotation {
 		separator = ""
 	}
