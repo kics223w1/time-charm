@@ -26,7 +26,6 @@ type Options struct {
 }
 
 func PrettyMilliseconds(milliseconds int64, options Options) string {
-
 	sign := ""
 	if milliseconds < 0 {
 		sign = "-"
@@ -73,25 +72,35 @@ func PrettyMilliseconds(milliseconds int64, options Options) string {
 
 	if !options.HideSeconds {
 
-		if options.SeparateMilliseconds || options.FormatSubMilliseconds || (options.ColonNotation && milliseconds < 1000) {
+		if options.SeparateMilliseconds || options.FormatSubMilliseconds || (!options.ColonNotation && milliseconds < 1000) {
 			add(parsed.Seconds, "second", "s", nil, &result, options)
+
+			fmt.Printf("huy vao options if")
 			
 			if options.FormatSubMilliseconds {
 				add(parsed.Milliseconds, "millisecond", "ms", nil, &result, options)
 				add(parsed.Microseconds, "microsecond", "µs", nil, &result, options)
 				add(parsed.Nanoseconds, "nanosecond", "ns", nil, &result, options)
+
+				fmt.Printf("huy vao format sub milliseconds")
+
 			} else {
-				millisecondsAndBelow := parsed.Seconds + parsed.Microseconds / 1000 + parsed.Nanoseconds / 1e6
+				millisecondsAndBelow := float64(parsed.Milliseconds) + float64(parsed.Microseconds) / 1000 + float64(parsed.Nanoseconds) / 1e6
+				
+				fmt.Printf("huy vao format sub milliseconds else: %f\n", millisecondsAndBelow)
+				
 				millisecondsDecimalDigits := 0
 				if options.MillisecondsDecimalDigits != 0 {
 					millisecondsDecimalDigits = options.MillisecondsDecimalDigits
 				}
 
+
+
 				var roundedMilliseconds float64
 				if millisecondsAndBelow >= 1 {
-					roundedMilliseconds = math.Round(float64(millisecondsAndBelow))
+					roundedMilliseconds = math.Round(millisecondsAndBelow)
 				} else {
-					roundedMilliseconds = math.Ceil(float64(millisecondsAndBelow))
+					roundedMilliseconds = math.Ceil(millisecondsAndBelow)
 				}
 
 				var millisecondsString string
@@ -111,7 +120,9 @@ func PrettyMilliseconds(milliseconds int64, options Options) string {
 			
 		}  else {
 			// Calculate seconds
-			seconds := (milliseconds / 1000) % 60
+			seconds := math.Mod(float64(milliseconds)/1000, 60)
+
+			fmt.Printf("huy seconds: %f\n", seconds)
 
 			// Determine seconds decimal digits
 			secondsDecimalDigits := 1
