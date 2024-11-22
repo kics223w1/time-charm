@@ -4,13 +4,18 @@ import (
 	"testing"
 )
 
-func runTests(t *testing.T, title string, options Options, cases [][]interface{}) {
+func runTests(t *testing.T, title string, defaultOptions Options, cases [][]interface{}) {
 	t.Run(title, func(t *testing.T) {
 		for _, testCase := range cases {
 			var milliseconds int64
+			var options Options
 			var expected string
 
-			milliseconds, expected = testCase[0].(int64), testCase[1].(string)
+			if len(testCase) == 3 {
+				milliseconds, options, expected = testCase[0].(int64), testCase[1].(Options), testCase[2].(string)
+			} else {
+				milliseconds, options, expected = testCase[0].(int64), defaultOptions, testCase[1].(string)
+			}
 
 			result := PrettyMilliseconds(milliseconds, options)
 			if result != expected {
@@ -47,5 +52,17 @@ func TestHaveACompactOption(t *testing.T) {
 		{int64(1000 * 60 * 60 * 999), "41d"},
 		{int64(1000 * 60 * 60 * 24 * 465), "1y"},
 		{int64(1000 * 60 * 67 * 24 * 465), "1y"},
+	})
+}
+
+func TestHaveAUnitCountOption(t *testing.T) {
+	runTests(t, "unit count option", Options{UnitCount: 2}, [][]interface{}{
+		{int64(1000 * 60), Options{UnitCount: 0}, "1m"},
+		{int64(1000 * 60), Options{UnitCount: 1}, "1m"},
+		{int64(1000 * 60 * 67), Options{UnitCount: 1}, "1h"},
+		{int64(1000 * 60 * 67), Options{UnitCount: 2}, "1h 7m"},
+		{int64(1000 * 60 * 67 * 24 * 465), Options{UnitCount: 1}, "1y"},
+		{int64(1000 * 60 * 67 * 24 * 465), Options{UnitCount: 2}, "1y 154d"},
+		{int64(1000 * 60 * 67 * 24 * 465), Options{UnitCount: 3}, "1y 154d 6h"},
 	})
 }
