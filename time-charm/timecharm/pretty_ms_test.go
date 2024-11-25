@@ -173,6 +173,16 @@ func TestVerboseAndSecondsDecimalDigitsOptions(t *testing.T) {
 	})
 }
 
+func TestVerboseAndMillisecondsDecimalDigitsOptions(t *testing.T) {
+	runTests(t, [][]interface{}{
+		{interface{}(float64(1)), interface{}(Options{Verbose: true, MillisecondsDecimalDigits: 4}), interface{}("1.0000 millisecond")},
+		// {interface{}(float64(1 + 0.4)), interface{}(Options{Verbose: true, MillisecondsDecimalDigits: 4}), interface{}("1.4000 milliseconds")},
+		{interface{}(float64((1 * 2) + 0.4)), interface{}(Options{Verbose: true, MillisecondsDecimalDigits: 4}), interface{}("2.4000 milliseconds")},
+		{interface{}(float64((1 * 5) + 0.254)), interface{}(Options{Verbose: true, MillisecondsDecimalDigits: 4}), interface{}("5.2540 milliseconds")},
+		{interface{}(float64(33.333)), interface{}(Options{Verbose: true, MillisecondsDecimalDigits: 4}), interface{}("33.3330 milliseconds")},
+	})
+}
+ 
 
 
 
