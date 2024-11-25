@@ -64,6 +64,8 @@ func PrettyMilliseconds(milliseconds interface{}, options Options) string {
 	}
 	days := parsed.Days
 
+	fmt.Printf("parsed: %v\n", parsed)
+
 	if options.HideYearAndDays && days > 0 {
 		hours := (days * 24) + parsed.Hours
 		add(hours, "hour", "h", nil, &result, options)
@@ -82,9 +84,13 @@ func PrettyMilliseconds(milliseconds interface{}, options Options) string {
 
 	add(parsed.Minutes, "minute", "m", nil, &result, options)
 
+
+	fmt.Printf("parsed.Seconds: %d\n", parsed)
+
 	if !options.HideSeconds {
 
 		if options.SeparateMilliseconds || options.FormatSubMilliseconds || (!options.ColonNotation && msInt64 < 1000) {
+
 			add(parsed.Seconds, "second", "s", nil, &result, options)
 
 			if options.FormatSubMilliseconds {
@@ -95,12 +101,12 @@ func PrettyMilliseconds(milliseconds interface{}, options Options) string {
 			} else {
 				millisecondsAndBelow := float64(parsed.Milliseconds) + float64(parsed.Microseconds) / 1000 + float64(parsed.Nanoseconds) / 1e6
 				
+				fmt.Printf("millisecondsAndBelow: %f\n", millisecondsAndBelow)
+
 				millisecondsDecimalDigits := 0
 				if options.MillisecondsDecimalDigits != 0 {
 					millisecondsDecimalDigits = options.MillisecondsDecimalDigits
 				}
-
-
 
 				var roundedMilliseconds float64
 				if millisecondsAndBelow >= 1 {
@@ -116,18 +122,36 @@ func PrettyMilliseconds(milliseconds interface{}, options Options) string {
 					millisecondsString = fmt.Sprintf("%.0f", roundedMilliseconds)
 				}
 
-				millisecondsValue, err := strconv.ParseInt(millisecondsString, 10, 64)
-				if err != nil {
-					// handle error, e.g., log or return an empty string
-					return ""
+				// Check if millisecondsString contains a decimal point
+				if strings.Contains(millisecondsString, ".") {
+					// Parse as float64
+					millisecondsValue, err := strconv.ParseFloat(millisecondsString, 64)
+					if err != nil {
+						// handle error, e.g., log or return an empty string
+						return ""
+					}
+					// Convert to int64 if needed
+					millisecondsValueInt64 := int64(millisecondsValue)
+					add(millisecondsValueInt64, "millisecond", "ms", &millisecondsString, &result, options)
+				} else {
+					// Parse as int64
+					millisecondsValue, err := strconv.ParseInt(millisecondsString, 10, 64)
+					if err != nil {
+						// handle error, e.g., log or return an empty string
+						return ""
+					}
+					add(millisecondsValue, "millisecond", "ms", &millisecondsString, &result, options)
 				}
-				add(millisecondsValue, "millisecond", "ms", &millisecondsString, &result, options)
 			}
 			
 		}  else {
+			fmt.Printf("huy vao else seconds")
+
 			// Calculate seconds
 			seconds := math.Mod(float64(msInt64)/1000, 60)
 
+
+			
 			// Determine seconds decimal digits
 			secondsDecimalDigits := 1
 			if options.SecondsDecimalDigits != nil { // Check if it's explicitly set
@@ -155,6 +179,8 @@ func PrettyMilliseconds(milliseconds interface{}, options Options) string {
 		}
 	}
 
+	fmt.Printf("result: %v\n", result)
+
 	if len(result) == 0 {
 		if options.Verbose {
 			return sign + "0 milliseconds"
@@ -171,6 +197,8 @@ func PrettyMilliseconds(milliseconds interface{}, options Options) string {
 	if options.UnitCount > 0 {
 		result = result[:max(options.UnitCount, 1)]
 	}
+
+	fmt.Printf("result: %v\n", result)
 
 	return sign + strings.Join(result, separator)
 }	

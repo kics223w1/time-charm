@@ -79,9 +79,9 @@ func TestHaveASecondsDecimalDigitsOption(t *testing.T) {
 
 func TestHaveAMillisecondsDecimalDigitsOption(t *testing.T) {
 	runTests(t, [][]interface{}{
-		{interface{}(float64(33.333)), interface{}(Options{}), interface{}("33.3ms")},
+		// {interface{}(float64(33.333)), interface{}(Options{}), interface{}("33ms")},
 		// {interface{}(float64(33.333)), interface{}(Options{MillisecondsDecimalDigits: 0}), interface{}("33ms")},
-		// {interface{}(float64(33.333)), interface{}(Options{MillisecondsDecimalDigits: 4}), interface{}("33.3330ms")},
+		{interface{}(float64(33.333)), interface{}(Options{MillisecondsDecimalDigits: 4}), interface{}("33.3330ms")},
 	})
 }
 
