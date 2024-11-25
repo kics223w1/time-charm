@@ -75,8 +75,6 @@ func PrettyMilliseconds(milliseconds interface{}, options Options) string {
 	}
 	days := parsed.Days
 
-	fmt.Printf("parsed: %v\n", parsed)
-
 	if options.HideYearAndDays && days > 0 {
 		hours := (days * 24) + parsed.Hours
 		add(hours, "hour", "h", nil, &result, options)
