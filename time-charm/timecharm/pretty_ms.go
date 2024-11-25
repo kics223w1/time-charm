@@ -216,7 +216,7 @@ func PrettyMilliseconds(milliseconds interface{}, options Options) string {
 
 	separator := " "
 	if options.ColonNotation {
-		separator = ""
+		separator = ":"
 	}
 
 	if options.UnitCount > 0 {

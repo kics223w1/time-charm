@@ -256,6 +256,74 @@ func TestNegativeMillisecondsWithOptions(t *testing.T) {
 	})
 }
 
+func TestColonNotationOption(t *testing.T) {
+	runTests(t, [][]interface{}{
+		// Default formats
+		{interface{}(int64(1000)), interface{}(Options{ColonNotation: true}), interface{}("0:01")},
+		{interface{}(int64(1543)), interface{}(Options{ColonNotation: true}), interface{}("0:01.5")},
+		{interface{}(int64(1000 * 60)), interface{}(Options{ColonNotation: true}), interface{}("1:00")},
+		{interface{}(int64(1000 * 90)), interface{}(Options{ColonNotation: true}), interface{}("1:30")},
+		{interface{}(int64(95_543)), interface{}(Options{ColonNotation: true}), interface{}("1:35.5")},
+		{interface{}(int64((1000 * 60 * 10) + 543)), interface{}(Options{ColonNotation: true}), interface{}("10:00.5")},
+		{interface{}(int64((1000 * 60 * 59) + (1000 * 59) + 543)), interface{}(Options{ColonNotation: true}), interface{}("59:59.5")},
+		{interface{}(int64((1000 * 60 * 60 * 15) + (1000 * 60 * 59) + (1000 * 59) + 543)), interface{}(Options{ColonNotation: true}), interface{}("15:59:59.5")},
+
+		// Together with `secondsDecimalDigits`
+		// {interface{}(int64(999)), interface{}(Options{ColonNotation: true, SecondsDecimalDigits: ptr(0)}), interface{}("0:00")},
+		{interface{}(int64(999)), interface{}(Options{ColonNotation: true, SecondsDecimalDigits: ptr(1)}), interface{}("0:00.9")},
+		{interface{}(int64(999)), interface{}(Options{ColonNotation: true, SecondsDecimalDigits: ptr(2)}), interface{}("0:00.99")},
+		{interface{}(int64(999)), interface{}(Options{ColonNotation: true, SecondsDecimalDigits: ptr(3)}), interface{}("0:00.999")},
+		{interface{}(int64(1000)), interface{}(Options{ColonNotation: true, SecondsDecimalDigits: ptr(0)}), interface{}("0:01")},
+		{interface{}(int64(1000)), interface{}(Options{ColonNotation: true, SecondsDecimalDigits: ptr(1)}), interface{}("0:01")},
+		{interface{}(int64(1000)), interface{}(Options{ColonNotation: true, SecondsDecimalDigits: ptr(2)}), interface{}("0:01")},
+		{interface{}(int64(1000)), interface{}(Options{ColonNotation: true, SecondsDecimalDigits: ptr(3)}), interface{}("0:01")},
+		{interface{}(int64(1001)), interface{}(Options{ColonNotation: true, SecondsDecimalDigits: ptr(0)}), interface{}("0:01")},
+		{interface{}(int64(1001)), interface{}(Options{ColonNotation: true, SecondsDecimalDigits: ptr(1)}), interface{}("0:01")},
+		{interface{}(int64(1001)), interface{}(Options{ColonNotation: true, SecondsDecimalDigits: ptr(2)}), interface{}("0:01")},
+		{interface{}(int64(1001)), interface{}(Options{ColonNotation: true, SecondsDecimalDigits: ptr(3)}), interface{}("0:01.001")},
+		{interface{}(int64(1543)), interface{}(Options{ColonNotation: true, SecondsDecimalDigits: ptr(0)}), interface{}("0:01")},
+		{interface{}(int64(1543)), interface{}(Options{ColonNotation: true, SecondsDecimalDigits: ptr(1)}), interface{}("0:01.5")},
+		{interface{}(int64(1543)), interface{}(Options{ColonNotation: true, SecondsDecimalDigits: ptr(2)}), interface{}("0:01.54")},
+		{interface{}(int64(1543)), interface{}(Options{ColonNotation: true, SecondsDecimalDigits: ptr(3)}), interface{}("0:01.543")},
+		{interface{}(int64(95_543)), interface{}(Options{ColonNotation: true, SecondsDecimalDigits: ptr(0)}), interface{}("1:35")},
+		{interface{}(int64(95_543)), interface{}(Options{ColonNotation: true, SecondsDecimalDigits: ptr(1)}), interface{}("1:35.5")},
+		{interface{}(int64(95_543)), interface{}(Options{ColonNotation: true, SecondsDecimalDigits: ptr(2)}), interface{}("1:35.54")},
+		{interface{}(int64(95_543)), interface{}(Options{ColonNotation: true, SecondsDecimalDigits: ptr(3)}), interface{}("1:35.543")},
+		{interface{}(int64((1000 * 60 * 10) + 543)), interface{}(Options{ColonNotation: true, SecondsDecimalDigits: ptr(3)}), interface{}("10:00.543")},
+		{interface{}(int64((1000 * 60 * 60 * 15) + (1000 * 60 * 59) + (1000 * 59) + 543)), interface{}(Options{ColonNotation: true, SecondsDecimalDigits: ptr(3)}), interface{}("15:59:59.543")},
+
+		// Together with `keepDecimalsOnWholeSeconds`
+		{interface{}(int64(999)), interface{}(Options{ColonNotation: true, SecondsDecimalDigits: ptr(0), KeepDecimalsOnWholeSeconds: true}), interface{}("0:00")},
+		{interface{}(int64(999)), interface{}(Options{ColonNotation: true, SecondsDecimalDigits: ptr(1), KeepDecimalsOnWholeSeconds: true}), interface{}("0:00.9")},
+		{interface{}(int64(999)), interface{}(Options{ColonNotation: true, SecondsDecimalDigits: ptr(2), KeepDecimalsOnWholeSeconds: true}), interface{}("0:00.99")},
+		{interface{}(int64(999)), interface{}(Options{ColonNotation: true, SecondsDecimalDigits: ptr(3), KeepDecimalsOnWholeSeconds: true}), interface{}("0:00.999")},
+		{interface{}(int64(1000)), interface{}(Options{ColonNotation: true, KeepDecimalsOnWholeSeconds: true}), interface{}("0:01.0")},
+		{interface{}(int64(1000)), interface{}(Options{ColonNotation: true, SecondsDecimalDigits: ptr(0), KeepDecimalsOnWholeSeconds: true}), interface{}("0:01")},
+		{interface{}(int64(1000)), interface{}(Options{ColonNotation: true, SecondsDecimalDigits: ptr(1), KeepDecimalsOnWholeSeconds: true}), interface{}("0:01.0")},
+		{interface{}(int64(1000)), interface{}(Options{ColonNotation: true, SecondsDecimalDigits: ptr(3), KeepDecimalsOnWholeSeconds: true}), interface{}("0:01.000")},
+		{interface{}(int64(1000 * 90)), interface{}(Options{ColonNotation: true, KeepDecimalsOnWholeSeconds: true}), interface{}("1:30.0")},
+		{interface{}(int64(1000 * 90)), interface{}(Options{ColonNotation: true, SecondsDecimalDigits: ptr(3), KeepDecimalsOnWholeSeconds: true}), interface{}("1:30.000")},
+		{interface{}(int64(1000 * 60 * 10)), interface{}(Options{ColonNotation: true, SecondsDecimalDigits: ptr(3), KeepDecimalsOnWholeSeconds: true}), interface{}("10:00.000")},
+
+		// Together with `unitCount`
+		{interface{}(int64(1000 * 90)), interface{}(Options{ColonNotation: true, SecondsDecimalDigits: ptr(0), UnitCount: 1}), interface{}("1")},
+		// {interface{}(int64(1000 * 90)), interface{}(Options{ColonNotation: true, SecondsDecimalDigits: ptr(0), UnitCount: 2}), interface{}("1:30")},
+		// {interface{}(int64(1000 * 60 * 90)), interface{}(Options{ColonNotation: true, SecondsDecimalDigits: ptr(0), UnitCount: 3}), interface{}("1:30:00")},
+		{interface{}(int64(95_543)), interface{}(Options{ColonNotation: true, SecondsDecimalDigits: ptr(1), UnitCount: 1}), interface{}("1")},
+		{interface{}(int64(95_543)), interface{}(Options{ColonNotation: true, SecondsDecimalDigits: ptr(1), UnitCount: 2}), interface{}("1:35.5")},
+		{interface{}(int64(95_543 + (1000 * 60 * 60))), interface{}(Options{ColonNotation: true, SecondsDecimalDigits: ptr(1), UnitCount: 3}), interface{}("1:01:35.5")},
+
+		// Make sure incompatible options fall back to `colonNotation`
+		{interface{}(int64((1000 * 60 * 59) + (1000 * 59) + 543)), interface{}(Options{ColonNotation: true, FormatSubMilliseconds: true}), interface{}("59:59.5")},
+		{interface{}(int64((1000 * 60 * 59) + (1000 * 59) + 543)), interface{}(Options{ColonNotation: true, SeparateMilliseconds: true}), interface{}("59:59.5")},
+		{interface{}(int64((1000 * 60 * 59) + (1000 * 59) + 543)), interface{}(Options{ColonNotation: true, Verbose: true}), interface{}("59:59.5")},
+		{interface{}(int64((1000 * 60 * 59) + (1000 * 59) + 543)), interface{}(Options{ColonNotation: true, Compact: true}), interface{}("59:59.5")},
+
+		// Big numbers
+		{interface{}(int64(9007199254740991)), interface{}(Options{ColonNotation: true}), interface{}("285616:151:08:59:00.9")},
+	})
+}
+
 
 
 
