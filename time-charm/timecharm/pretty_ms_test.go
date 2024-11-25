@@ -337,6 +337,19 @@ func TestHideYearOption(t *testing.T) {
 	})
 }
 
+func TestHideSecondsOption(t *testing.T) {
+	runTests(t, [][]interface{}{
+		{interface{}(int64((1000 * 60) + 6500)), interface{}(Options{HideSeconds: false}), interface{}("1m 6.5s")},
+		{interface{}(int64((1000 * 60) + 6500)), interface{}(Options{HideSeconds: true}), interface{}("1m")},
+		{interface{}(int64((1000 * 60) + 6500)), interface{}(Options{HideSeconds: true, SecondsDecimalDigits: ptr(3)}), interface{}("1m")},
+		{interface{}(int64((1000 * 60) + 6500)), interface{}(Options{HideSeconds: true, KeepDecimalsOnWholeSeconds: true}), interface{}("1m")},
+		{interface{}(int64((1000 * 60) + 6500)), interface{}(Options{HideSeconds: true, FormatSubMilliseconds: true}), interface{}("1m")},
+		{interface{}(int64((1000 * 60) + 6500)), interface{}(Options{HideSeconds: true, SeparateMilliseconds: true}), interface{}("1m")},
+		{interface{}(int64((1000 * 60) + 6500)), interface{}(Options{HideSeconds: true, Verbose: true}), interface{}("1 minute")},
+		{interface{}(int64((1000 * 60) + 6500)), interface{}(Options{HideSeconds: true, Compact: true}), interface{}("1m")},
+	})
+}
+
 
 
 
