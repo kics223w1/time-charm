@@ -9,17 +9,17 @@ import (
 
 const SECOND_ROUNDING_EPSILON = 0.000_000_1
 type Options struct {
-	ColonNotation bool
-	Compact       bool
-	FormatSubMilliseconds bool
-	SeparateMilliseconds  bool
-	Verbose               bool
-	UnitCount             int
-	SecondsDecimalDigits  int
-	MillisecondsDecimalDigits int
-	HideYearAndDays           bool
-	HideYear                 bool
-	HideSeconds              bool
+	ColonNotation              bool
+	Compact                    bool
+	FormatSubMilliseconds      bool
+	SeparateMilliseconds       bool
+	Verbose                    bool
+	UnitCount                  int
+	SecondsDecimalDigits       *int
+	MillisecondsDecimalDigits  int
+	HideYearAndDays            bool
+	HideYear                   bool
+	HideSeconds                bool
 	KeepDecimalsOnWholeSeconds bool
 }
 
@@ -53,7 +53,7 @@ func PrettyMilliseconds(milliseconds interface{}, options Options) string {
 
 	if options.Compact {
 		options.UnitCount = 1
-		options.SecondsDecimalDigits = 0
+		options.SecondsDecimalDigits = nil
 		options.MillisecondsDecimalDigits = 0
 	}
 
@@ -130,8 +130,8 @@ func PrettyMilliseconds(milliseconds interface{}, options Options) string {
 
 			// Determine seconds decimal digits
 			secondsDecimalDigits := 1
-			if options.SecondsDecimalDigits != 0 {
-				secondsDecimalDigits = options.SecondsDecimalDigits
+			if options.SecondsDecimalDigits != nil { // Check if it's explicitly set
+				secondsDecimalDigits = *options.SecondsDecimalDigits
 			}
 
 			// Format seconds with specified decimal digits
