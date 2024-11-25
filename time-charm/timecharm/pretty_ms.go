@@ -103,7 +103,6 @@ func PrettyMilliseconds(milliseconds interface{}, options Options) string {
 		if options.SeparateMilliseconds || options.FormatSubMilliseconds || (!options.ColonNotation && (isFloat && msFloat64 < 1000 || !isFloat && msInt64 < 1000)) {
 
 			add(parsed.Seconds, "second", "s", nil, &result, options)
-
 			
 			if options.FormatSubMilliseconds {
 				add(parsed.Milliseconds, "millisecond", "ms", nil, &result, options)
@@ -169,7 +168,6 @@ func PrettyMilliseconds(milliseconds interface{}, options Options) string {
 			}
 
 			fmt.Printf("huy vao else seconds: %f\n", seconds)
-
 
 			// Determine seconds decimal digits
 			secondsDecimalDigits := 1
@@ -303,6 +301,8 @@ func add(value interface{}, long, short string, valueString *string, result *[]s
 			if isFloat {
 				*valueString += " " + pluralize(long, valueFloat64)
 			} else {
+
+
 				*valueString += " " + pluralize(long, valueInt64)
 			}
 		} else {

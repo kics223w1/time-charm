@@ -134,5 +134,23 @@ func TestHaveAFormatSubMillisecondsOption(t *testing.T) {
 	})
 } 
 
+func TestVerboseAndCompactOptions(t *testing.T) {
+	runTests(t, [][]interface{}{
+		{interface{}(int64(1000)), interface{}(Options{Compact: true, Verbose: true}), interface{}("1 second")},
+		// {interface{}(int64(1000 + 400)), interface{}(Options{Compact: true, Verbose: true}), interface{}("1 second")},
+		// {interface{}(int64((1000 * 2) + 400)), interface{}(Options{Compact: true, Verbose: true}), interface{}("2 seconds")},
+		{interface{}(int64(1000 * 5)), interface{}(Options{Compact: true, Verbose: true}), interface{}("5 seconds")},
+		{interface{}(int64(1000 * 55)), interface{}(Options{Compact: true, Verbose: true}), interface{}("55 seconds")},
+		{interface{}(int64(1000 * 67)), interface{}(Options{Compact: true, Verbose: true}), interface{}("1 minute")},
+		{interface{}(int64(1000 * 60 * 5)), interface{}(Options{Compact: true, Verbose: true}), interface{}("5 minutes")},
+		{interface{}(int64(1000 * 60 * 67)), interface{}(Options{Compact: true, Verbose: true}), interface{}("1 hour")},
+		{interface{}(int64(1000 * 60 * 60 * 12)), interface{}(Options{Compact: true, Verbose: true}), interface{}("12 hours")},
+		{interface{}(int64(1000 * 60 * 60 * 40)), interface{}(Options{Compact: true, Verbose: true}), interface{}("1 day")},
+		{interface{}(int64(1000 * 60 * 60 * 999)), interface{}(Options{Compact: true, Verbose: true}), interface{}("41 days")},
+		{interface{}(int64(1000 * 60 * 60 * 24 * 465)), interface{}(Options{Compact: true, Verbose: true}), interface{}("1 year")},
+		{interface{}(int64(1000 * 60 * 67 * 24 * 750)), interface{}(Options{Compact: true, Verbose: true}), interface{}("2 years")},
+	})
+}
+
 
 
