@@ -99,6 +99,17 @@ func TestHaveAVerboseOption(t *testing.T) {
 		{interface{}(int64(1)), interface{}(Options{Verbose: true}), interface{}("1 millisecond")},
 		{interface{}(int64(1000)), interface{}(Options{Verbose: true}), interface{}("1 second")},
 		{interface{}(int64(1000 + 400)), interface{}(Options{Verbose: true}), interface{}("1.4 seconds")},
+		{interface{}(int64(1000 * 2 + 400)), interface{}(Options{Verbose: true}), interface{}("2.4 seconds")},
+		{interface{}(int64(1000 * 5)), interface{}(Options{Verbose: true}), interface{}("5 seconds")},
+		{interface{}(int64(1000 * 55)), interface{}(Options{Verbose: true}), interface{}("55 seconds")},
+		{interface{}(int64(1000 * 67)), interface{}(Options{Verbose: true}), interface{}("1 minute 7 seconds")},
+		{interface{}(int64(1000 * 60 * 5)), interface{}(Options{Verbose: true}), interface{}("5 minutes")},
+		{interface{}(int64(1000 * 60 * 67)), interface{}(Options{Verbose: true}), interface{}("1 hour 7 minutes")},
+		{interface{}(int64(1000 * 60 * 60 * 12)), interface{}(Options{Verbose: true}), interface{}("12 hours")},
+		{interface{}(int64(1000 * 60 * 60 * 40)), interface{}(Options{Verbose: true}), interface{}("1 day 16 hours")},
+		{interface{}(int64(1000 * 60 * 60 * 999)), interface{}(Options{Verbose: true}), interface{}("41 days 15 hours")},
+		{interface{}(int64(1000 * 60 * 60 * 24 * 465)), interface{}(Options{Verbose: true}), interface{}("1 year 100 days")},
+		{interface{}(int64(1000 * 60 * 67 * 24 * 465)), interface{}(Options{Verbose: true}), interface{}("1 year 154 days 6 hours")},
 	})
 }
 
