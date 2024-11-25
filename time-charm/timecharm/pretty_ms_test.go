@@ -66,14 +66,14 @@ func TestHaveAUnitCountOption(t *testing.T) {
 
 func TestHaveASecondsDecimalDigitsOption(t *testing.T) {
 	runTests(t,  [][]interface{}{
-		// {interface{}(int64(10_000)), interface{}(Options{}), interface{}("10s")},
-		// {interface{}(int64(33_333)), interface{}(Options{}), interface{}("33.3s")},
+		{interface{}(int64(10_000)), interface{}(Options{}), interface{}("10s")},
+		{interface{}(int64(33_333)), interface{}(Options{}), interface{}("33.3s")},
 		{interface{}(int64(999)), interface{}(Options{SecondsDecimalDigits: ptr(0)}), interface{}("999ms")},
 		{interface{}(int64(1000)), interface{}(Options{SecondsDecimalDigits: ptr(0)}), interface{}("1s")},
 		{interface{}(int64(1999)), interface{}(Options{SecondsDecimalDigits: ptr(0)}), interface{}("1s")},
 		{interface{}(int64(2000)), interface{}(Options{SecondsDecimalDigits: ptr(0)}), interface{}("2s")},
-		// {interface{}(int64(33_333)), interface{}(Options{SecondsDecimalDigits: ptr(0)}), interface{}("33.3s")},
-		// {interface{}(int64(33_333)), interface{}(Options{SecondsDecimalDigits: ptr(4)}), interface{}("33.3330s")},
+		{interface{}(int64(33_333)), interface{}(Options{SecondsDecimalDigits: ptr(0)}), interface{}("33s")},
+		{interface{}(int64(33_333)), interface{}(Options{SecondsDecimalDigits: ptr(4)}), interface{}("33.3330s")},
 	})
 }
 
