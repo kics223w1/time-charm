@@ -4,8 +4,8 @@ import (
 	"testing"
 )
 
-func runTests(t *testing.T, title string, cases [][]interface{}) {
-	t.Run(title, func(t *testing.T) {
+func runTests(t *testing.T, cases [][]interface{}) {
+	t.Run("TestPrettyMilliseconds", func(t *testing.T) {
 		for _, testCase := range cases {
 			var milliseconds interface{}
 			var options Options
@@ -23,72 +23,81 @@ func runTests(t *testing.T, title string, cases [][]interface{}) {
 }
 
 func TestPrettifyMilliseconds(t *testing.T) {
-	runTests(t, "prettify milliseconds", [][]interface{}{
-		{int64(0),Options{}, "0ms"},
-		{int64(1),Options{}, "1ms"},
-		{int64(999),Options{}, "999ms"},
-		{int64(1000),Options{}, "1s"},
-		{int64(1000 + 400),Options{}, "1.4s"},
-		{int64((1000 * 2) + 400),Options{}, "2.4s"},
-		{int64(1000 * 55),Options{}, "55s"},
-		{int64(1000 * 67),Options{}, "1m 7s"},
-		{int64(1000 * 60 * 5),Options{}, "5m"},
-		{int64(1000 * 60 * 67),Options{}, "1h 7m"},
-		{int64(1000 * 60 * 60 * 12),Options{}, "12h"},
-		{int64(1000 * 60 * 60 * 40),Options{}, "1d 16h"},
-		{int64(1000 * 60 * 60 * 999),Options{}, "41d 15h"},
-		{int64(1000 * 60 * 60 * 24 * 465),Options{}, "1y 100d"},
-		{int64(1000 * 60 * 67 * 24 * 465),Options{}, "1y 154d 6h"},
+	runTests(t, [][]interface{}{
+		{interface{}(int64(0)), interface{}(Options{}), interface{}("0ms")},
+		{interface{}(int64(1)), interface{}(Options{}), interface{}("1ms")},
+		{interface{}(int64(999)), interface{}(Options{}), interface{}("999ms")},
+		{interface{}(int64(1000)), interface{}(Options{}), interface{}("1s")},
+		{interface{}(int64(1000 + 400)), interface{}(Options{}), interface{}("1.4s")},
+		{interface{}(int64((1000 * 2) + 400)), interface{}(Options{}), interface{}("2.4s")},
+		{interface{}(int64(1000 * 55)), interface{}(Options{}), interface{}("55s")},
+		{interface{}(int64(1000 * 67)), interface{}(Options{}), interface{}("1m 7s")},
+		{interface{}(int64(1000 * 60 * 5)), interface{}(Options{}), interface{}("5m")},
+		{interface{}(int64(1000 * 60 * 67)), interface{}(Options{}), interface{}("1h 7m")},
+		{interface{}(int64(1000 * 60 * 60 * 12)), interface{}(Options{}), interface{}("12h")},
+		{interface{}(int64(1000 * 60 * 60 * 40)), interface{}(Options{}), interface{}("1d 16h")},
+		{interface{}(int64(1000 * 60 * 60 * 999)), interface{}(Options{}), interface{}("41d 15h")},
+		{interface{}(int64(1000 * 60 * 60 * 24 * 465)), interface{}(Options{}), interface{}("1y 100d")},
+		{interface{}(int64(1000 * 60 * 67 * 24 * 465)), interface{}(Options{}), interface{}("1y 154d 6h")},
 	})
 }
 
 
 func TestHaveACompactOption(t *testing.T) {
-	runTests(t, "compact option", [][]interface{}{
-		{int64(1000 + 4),Options{}, "1s"},
-		{int64(1000 * 60 * 60 * 999),Options{}, "41d"},
-		{int64(1000 * 60 * 60 * 24 * 465),Options{}, "1y"},
-		{int64(1000 * 60 * 67 * 24 * 465),Options{}, "1y"},
+	runTests(t, [][]interface{}{
+		{interface{}(int64(1000 + 4)), interface{}(Options{Compact: true}), interface{}("1s")},
+		{interface{}(int64(1000 * 60 * 60 * 999)), interface{}(Options{Compact: true}), interface{}("41d")},
+		{interface{}(int64(1000 * 60 * 60 * 24 * 465)), interface{}(Options{Compact: true}), interface{}("1y")},
+		{interface{}(int64(1000 * 60 * 67 * 24 * 465)), interface{}(Options{Compact: true}), interface{}("1y")},
 	})
 }
 
 func TestHaveAUnitCountOption(t *testing.T) {
-	runTests(t, "unit count option", [][]interface{}{
-		{int64(1000 * 60), Options{}, "1m"},
-		{int64(1000 * 60), Options{}, "1m"},
-		{int64(1000 * 60 * 67), Options{}, "1h"},
-		{int64(1000 * 60 * 67), Options{}, "1h 7m"},
-		{int64(1000 * 60 * 67 * 24 * 465), Options{}, "1y"},
-		{int64(1000 * 60 * 67 * 24 * 465), Options{}, "1y 154d"},
-		{int64(1000 * 60 * 67 * 24 * 465), Options{UnitCount: 3}, "1y 154d 6h"},
+	runTests(t, [][]interface{}{
+		{interface{}(int64(1000 * 60)), interface{}(Options{UnitCount: 0}), interface{}("1m")},
+		{interface{}(int64(1000 * 60)), interface{}(Options{UnitCount: 1}), interface{}("1m")},
+		{interface{}(int64(1000 * 60 * 67)), interface{}(Options{UnitCount: 1}), interface{}("1h")},
+		{interface{}(int64(1000 * 60 * 67)), interface{}(Options{UnitCount: 2}), interface{}("1h 7m")},
+		{interface{}(int64(1000 * 60 * 67 * 24 * 465)), interface{}(Options{UnitCount: 1}), interface{}("1y")},
+		{interface{}(int64(1000 * 60 * 67 * 24 * 465)), interface{}(Options{UnitCount: 2}), interface{}("1y 154d")},
+		{interface{}(int64(1000 * 60 * 67 * 24 * 465)), interface{}(Options{UnitCount: 3}), interface{}("1y 154d 6h")},
 	})
 }
 
 func TestHaveASecondsDecimalDigitsOption(t *testing.T) {
-	runTests(t, "seconds decimal digits option", [][]interface{}{
-		{int64(10_000),Options{}, "10s"},
-		{int64(33_333),Options{}, "33.3s"},
-		{int64(999), Options{SecondsDecimalDigits: 0},"999ms"},
-		{int64(1000), Options{SecondsDecimalDigits: 0},"1s"},
-		// {int64(1999), Options{SecondsDecimalDigits: 0},"1s"},
-		{int64(2000), Options{SecondsDecimalDigits: 0},"2s"},
-		{int64(33_333), Options{SecondsDecimalDigits: 0},"33.3s"},
-		{int64(33_333), Options{SecondsDecimalDigits: 4},"33.3330s"},
-		
+	runTests(t,  [][]interface{}{
+		{interface{}(int64(10_000)), interface{}(Options{}), interface{}("10s")},
+		{interface{}(int64(33_333)), interface{}(Options{}), interface{}("33.3s")},
+		{interface{}(int64(999)), interface{}(Options{SecondsDecimalDigits: 0}), interface{}("999ms")},
+		{interface{}(int64(1000)), interface{}(Options{SecondsDecimalDigits: 0}), interface{}("1s")},
+		{interface{}(int64(1999)), interface{}(Options{SecondsDecimalDigits: 0}), interface{}("1s")},
+		{interface{}(int64(2000)), interface{}(Options{SecondsDecimalDigits: 0}), interface{}("2s")},
+		{interface{}(int64(33_333)), interface{}(Options{SecondsDecimalDigits: 0}), interface{}("33.3s")},
+		{interface{}(int64(33_333)), interface{}(Options{SecondsDecimalDigits: 4}), interface{}("33.3330s")},
 	})
 }
 
 func TestHaveAMillisecondsDecimalDigitsOption(t *testing.T) {
-	runTests(t, "milliseconds decimal digits option", [][]interface{}{
-		{float64(33.333),Options{}, "33.3ms"},
-		// {float64(33.333), Options{MillisecondsDecimalDigits: 0},"33ms"},
-		// {float64(33.333), Options{MillisecondsDecimalDigits: 4},"33.3330ms"},
+	runTests(t, [][]interface{}{
+		{interface{}(float64(33.333)), interface{}(Options{}), interface{}("33.3ms")},
+		// {interface{}(float64(33.333)), interface{}(Options{MillisecondsDecimalDigits: 0}), interface{}("33ms")},
+		// {interface{}(float64(33.333)), interface{}(Options{MillisecondsDecimalDigits: 4}), interface{}("33.3330ms")},
 	})
 }
 
 func TestHaveAKeepDecimalsOnWholeSecondsOption(t *testing.T) {
-	runTests(t, "keep decimals on whole seconds option",  [][]interface{}{
-		{int64(1000 * 33), Options{SecondsDecimalDigits: 2,KeepDecimalsOnWholeSeconds: true},"33.00s"},
-		// {float64(1000 * 33.000_04), Options{SecondsDecimalDigits: 2 , KeepDecimalsOnWholeSeconds: true},"33.00s"},
+	runTests(t,  [][]interface{}{
+		{interface{}(int64(1000 * 33)), interface{}(Options{SecondsDecimalDigits: 2, KeepDecimalsOnWholeSeconds: true}), interface{}("33.00s")},
+		// {interface{}(float64(1000 * 33.000_04)), interface{}(Options{SecondsDecimalDigits: 2, KeepDecimalsOnWholeSeconds: true}), interface{}("33.00s")},
+	})
+}
+
+func TestHaveAVerboseOption(t *testing.T) {
+	runTests(t, [][]interface{}{
+		// {interface{}(int64(0)), interface{}(Options{Verbose: true}), interface{}("0 milliseconds")},
+		// {interface{}(float64(0.1)), interface{}(Options{Verbose: true}), interface{}("1 milliseconds")},
+		// {interface{}(int64(1)), interface{}(Options{Verbose: true}), interface{}("1 millisecond")},
+		// {interface{}(int64(1000)), interface{}(Options{Verbose: true}), interface{}("1 second")},
+		// {interface{}(int64(1000 + 400)), interface{}(Options{Verbose: true}), interface{}("1.4 seconds")},
 	})
 }

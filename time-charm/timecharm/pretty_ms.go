@@ -8,8 +8,6 @@ import (
 )
 
 const SECOND_ROUNDING_EPSILON = 0.000_000_1
-
-
 type Options struct {
 	ColonNotation bool
 	Compact       bool
@@ -26,17 +24,24 @@ type Options struct {
 }
 
 func PrettyMilliseconds(milliseconds interface{}, options Options) string {
-	// Type assertion to ensure milliseconds is an int64
-	ms, ok := milliseconds.(int64)
-	if !ok {
+	// Convert milliseconds to float64
+	var ms float64
+	switch v := milliseconds.(type) {
+	case int64:
+		ms = float64(v)
+	case float64:
+		ms = v
+	default:
 		// Handle the error case, e.g., return an empty string or an error message
 		return ""
 	}
+	// Convert to int64 for further processing
+	msInt64 := int64(ms)
 
 	sign := ""
-	if ms < 0 {
+	if msInt64 < 0 {
 		sign = "-"
-		ms = -ms
+		msInt64 = -msInt64
 	}
 
 	if options.ColonNotation {
@@ -53,7 +58,7 @@ func PrettyMilliseconds(milliseconds interface{}, options Options) string {
 	}
 
 	result := []string{}
-	parsed, err := ParseMilliseconds(ms)
+	parsed, err := ParseMilliseconds(msInt64)
 	if err != nil {
 		return ""
 	}
@@ -79,7 +84,7 @@ func PrettyMilliseconds(milliseconds interface{}, options Options) string {
 
 	if !options.HideSeconds {
 
-		if options.SeparateMilliseconds || options.FormatSubMilliseconds || (!options.ColonNotation && ms < 1000) {
+		if options.SeparateMilliseconds || options.FormatSubMilliseconds || (!options.ColonNotation && msInt64 < 1000) {
 			add(parsed.Seconds, "second", "s", nil, &result, options)
 
 			if options.FormatSubMilliseconds {
@@ -121,7 +126,7 @@ func PrettyMilliseconds(milliseconds interface{}, options Options) string {
 			
 		}  else {
 			// Calculate seconds
-			seconds := math.Mod(float64(ms)/1000, 60)
+			seconds := math.Mod(float64(msInt64)/1000, 60)
 
 			// Determine seconds decimal digits
 			secondsDecimalDigits := 1
@@ -186,19 +191,27 @@ func floorDecimals(value float64, decimalDigits int) string {
 
 
 func pluralize(word string, count int) string {
+
+	fmt.Printf("word: %s count: %d\n", word, count)
 	if count == 1 {
 		return word
 	}
 	return word + "s"
 }
 
-func add(value int64, long, short string, valueString *string, result *[]string, options Options) {
-	if (len(*result) == 0 || !options.ColonNotation) && value == 0 && !(options.ColonNotation && short == "m") {
+func add(value interface{}, long, short string, valueString *string, result *[]string, options Options) {
+	// Convert value to int64 for comparison
+	valueInt64, ok := value.(int64)
+	if !ok {
+		return
+	}
+
+	if (len(*result) == 0 || !options.ColonNotation) && valueInt64 == 0 && !(options.ColonNotation && short == "m") {
 		return
 	}
 
 	if valueString == nil {
-		v := fmt.Sprintf("%d", value)
+		v := fmt.Sprintf("%d", valueInt64)
 		valueString = &v
 	}
 
@@ -213,8 +226,11 @@ func add(value int64, long, short string, valueString *string, result *[]string,
 		}
 		*valueString = strings.Repeat("0", max(0, minLength-wholeDigits)) + *valueString
 	} else {
+
+		fmt.Printf("valueString: %d\n", valueInt64)
+
 		if options.Verbose {
-			*valueString += " " + pluralize(long, int(value))
+			*valueString += " " + pluralize(long, int(valueInt64))
 		} else {
 			*valueString += short
 		}
