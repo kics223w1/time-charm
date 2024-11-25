@@ -117,5 +117,12 @@ func TestHaveAVerboseOption(t *testing.T) {
 	})
 }
 
+func TestHaveASeparateMillisecondsOption(t *testing.T) {
+	runTests(t, [][]interface{}{
+		{interface{}(int64(1100)), interface{}(Options{SeparateMilliseconds: false}), interface{}("1.1s")},
+		{interface{}(int64(1100)), interface{}(Options{SeparateMilliseconds: true}), interface{}("1s 100ms")},
+	})
+}
+
 
 
