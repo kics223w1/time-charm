@@ -350,6 +350,17 @@ func TestHideSecondsOption(t *testing.T) {
 	})
 }
 
+func TestHideYearAndDaysHideSecondsAndColonNotationOptions(t *testing.T) {
+	// bigIntValue, _ := big.NewInt(0).SetString("49935920412842103004035395481028987999464046534956943499699299111988127994452371877941544064657466158761238598198439573398422590802628939657907651862093754718347197382375356132290413913997035817798852363459759428417939788028673041157169044258923152298554951723373534213538382550255361078125112229495590", 10)
+	runTests(t, [][]interface{}{
+		{interface{}(int64((1000 * 60 * 60 * 15) + (1000 * 60 * 59) + (1000 * 59) + 543)), interface{}(Options{HideSeconds: true, HideYearAndDays: true, ColonNotation: true}), interface{}("15:59")},
+		{interface{}(int64((1000 * 60 * 67 * 24 * 465) + (1000 * 60 * 60 * 15) + (1000 * 60 * 59) + (1000 * 59) + 543)), interface{}(Options{HideSeconds: true, HideYearAndDays: true, ColonNotation: true}), interface{}("12477:59")},
+		// For BigInt, Go doesn't have a direct equivalent, so we use a large integer representation
+		// This is a placeholder; you might need to adjust it based on your actual implementation
+		// {interface{}(bigIntValue), interface{}(Options{HideSeconds: true, HideYearAndDays: true, ColonNotation: true}), interface{}("49935920412842103004035395481028987999464046534956943499699299111988127994452371877941544064657466158761238598198439573398422590802628939657907651862093754718347197382375356132290413913997035817798852363459759428417939788028673041157169044258923152298554951723373534213538382550255361078125112229495590:14")},
+	})
+}
+
 
 
 
