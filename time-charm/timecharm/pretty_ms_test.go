@@ -79,8 +79,8 @@ func TestHaveASecondsDecimalDigitsOption(t *testing.T) {
 
 func TestHaveAMillisecondsDecimalDigitsOption(t *testing.T) {
 	runTests(t, [][]interface{}{
-		// {interface{}(float64(33.333)), interface{}(Options{}), interface{}("33ms")},
-		// {interface{}(float64(33.333)), interface{}(Options{MillisecondsDecimalDigits: 0}), interface{}("33ms")},
+		{interface{}(float64(33.333)), interface{}(Options{}), interface{}("33ms")},
+		{interface{}(float64(33.333)), interface{}(Options{MillisecondsDecimalDigits: 0}), interface{}("33ms")},
 		{interface{}(float64(33.333)), interface{}(Options{MillisecondsDecimalDigits: 4}), interface{}("33.3330ms")},
 	})
 }
@@ -88,13 +88,13 @@ func TestHaveAMillisecondsDecimalDigitsOption(t *testing.T) {
 func TestHaveAKeepDecimalsOnWholeSecondsOption(t *testing.T) {
 	runTests(t,  [][]interface{}{
 		{interface{}(int64(1000 * 33)), interface{}(Options{SecondsDecimalDigits: ptr(2), KeepDecimalsOnWholeSeconds: true}), interface{}("33.00s")},
-		// {interface{}(float64(1000 * 33.000_04)), interface{}(Options{SecondsDecimalDigits: ptr(2), KeepDecimalsOnWholeSeconds: true}), interface{}("33.00s")},
+		{interface{}(float64(1000 * 33.000_04)), interface{}(Options{SecondsDecimalDigits: ptr(2), KeepDecimalsOnWholeSeconds: true}), interface{}("33.00s")},
 	})
 }
 
 func TestHaveAVerboseOption(t *testing.T) {
 	runTests(t, [][]interface{}{
-		// {interface{}(int64(0)), interface{}(Options{Verbose: true}), interface{}("0 milliseconds")},
+		{interface{}(int64(0)), interface{}(Options{Verbose: true}), interface{}("0 milliseconds")},
 		// {interface{}(float64(0.1)), interface{}(Options{Verbose: true}), interface{}("1 milliseconds")},
 		// {interface{}(int64(1)), interface{}(Options{Verbose: true}), interface{}("1 millisecond")},
 		// {interface{}(int64(1000)), interface{}(Options{Verbose: true}), interface{}("1 second")},

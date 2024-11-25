@@ -24,24 +24,36 @@ type Options struct {
 }
 
 func PrettyMilliseconds(milliseconds interface{}, options Options) string {
-	// Convert milliseconds to float64
-	var ms float64
+	// Convert milliseconds to float64 or int64 based on the input type
+	var msFloat64 float64
+	var msInt64 int64
+	var isFloat bool
+
 	switch v := milliseconds.(type) {
 	case int64:
-		ms = float64(v)
+		msInt64 = v
 	case float64:
-		ms = v
+		msFloat64 = v
+		isFloat = true
 	default:
 		// Handle the error case, e.g., return an empty string or an error message
 		return ""
 	}
-	// Convert to int64 for further processing
-	msInt64 := int64(ms)
 
 	sign := ""
-	if msInt64 < 0 {
+	if isFloat && msFloat64 < 0 {
+		sign = "-"
+		msFloat64 = -msFloat64
+	} else if !isFloat && msInt64 < 0 {
 		sign = "-"
 		msInt64 = -msInt64
+	}
+
+	// Use msFloat64 or msInt64 based on the type
+	if isFloat {
+		fmt.Printf("msFloat64: %f\n", msFloat64)
+	} else {
+		fmt.Printf("msInt64: %d\n", msInt64)
 	}
 
 	if options.ColonNotation {
@@ -58,7 +70,13 @@ func PrettyMilliseconds(milliseconds interface{}, options Options) string {
 	}
 
 	result := []string{}
-	parsed, err := ParseMilliseconds(msInt64)
+	var parsed TimeComponents
+	var err error
+	if isFloat {
+		parsed, err = ParseMilliseconds(msFloat64)
+	} else {
+		parsed, err = ParseMilliseconds(msInt64)
+	}
 	if err != nil {
 		return ""
 	}
@@ -89,7 +107,7 @@ func PrettyMilliseconds(milliseconds interface{}, options Options) string {
 
 	if !options.HideSeconds {
 
-		if options.SeparateMilliseconds || options.FormatSubMilliseconds || (!options.ColonNotation && msInt64 < 1000) {
+		if options.SeparateMilliseconds || options.FormatSubMilliseconds || (!options.ColonNotation && (isFloat && msFloat64 < 1000 || !isFloat && msInt64 < 1000)) {
 
 			add(parsed.Seconds, "second", "s", nil, &result, options)
 
@@ -122,6 +140,8 @@ func PrettyMilliseconds(milliseconds interface{}, options Options) string {
 					millisecondsString = fmt.Sprintf("%.0f", roundedMilliseconds)
 				}
 
+
+
 				// Check if millisecondsString contains a decimal point
 				if strings.Contains(millisecondsString, ".") {
 					// Parse as float64
@@ -148,7 +168,12 @@ func PrettyMilliseconds(milliseconds interface{}, options Options) string {
 			fmt.Printf("huy vao else seconds")
 
 			// Calculate seconds
-			seconds := math.Mod(float64(msInt64)/1000, 60)
+			var seconds float64
+			if isFloat {
+				seconds = math.Mod(msFloat64/1000, 60)
+			} else {
+				seconds = math.Mod(float64(msInt64)/1000, 60)
+			}
 
 
 			

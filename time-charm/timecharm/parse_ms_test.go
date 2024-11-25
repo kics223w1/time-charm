@@ -83,6 +83,17 @@ func TestParseMilliseconds(t *testing.T) {
 			t.Errorf("got %v, want %v", result, expected)
 		}
 	})
+
+	t.Run("float value 33.333", func(t *testing.T) {
+		result, err := ParseMilliseconds(33.333)
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+		expected := TimeComponents{0, 0, 0, 0, 33, 333, 0}
+		if result != expected {
+			t.Errorf("got %v, want %v", result, expected)
+		}
+	})
 }
 
 
