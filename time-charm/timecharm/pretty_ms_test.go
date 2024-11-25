@@ -324,6 +324,21 @@ func TestColonNotationOption(t *testing.T) {
 	})
 }
 
+func TestHideYearOption(t *testing.T) {
+	runTests(t, [][]interface{}{
+		{interface{}(int64(1000 * 60)), interface{}(Options{HideYear: true}), interface{}("1m")},
+		{interface{}(int64(1000 * 60)), interface{}(Options{HideYear: false}), interface{}("1m")},
+		{interface{}(int64(1000 * 60 * 67)), interface{}(Options{HideYear: true}), interface{}("1h 7m")},
+		{interface{}(int64(1000 * 60 * 67)), interface{}(Options{HideYear: false}), interface{}("1h 7m")},
+		{interface{}(int64(1000 * 60 * 67 * 24 * 465)), interface{}(Options{HideYear: false}), interface{}("1y 154d 6h")},
+		{interface{}(int64(1000 * 60 * 67 * 24 * 465)), interface{}(Options{HideYear: true}), interface{}("519d 6h")},
+		{interface{}(int64((1000 * 60 * 67 * 24 * 465) + (1000 * 60) + 6500)), interface{}(Options{HideYear: false}), interface{}("1y 154d 6h 1m 6.5s")},
+		{interface{}(int64((1000 * 60 * 67 * 24 * 465) + (1000 * 60) + 6500)), interface{}(Options{HideYear: true}), interface{}("519d 6h 1m 6.5s")},
+	})
+}
+
+
+
 
 
 
