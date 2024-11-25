@@ -192,7 +192,13 @@ func TestVerboseAndFormatSubMillisecondsOptions(t *testing.T) {
 	})
 }
 
- 
+func TestCompactOverridesUnitCountOption(t *testing.T) {
+	runTests(t, [][]interface{}{
+		{interface{}(int64(1000 * 60 * 67 * 24 * 465)), interface{}(Options{Verbose: true, Compact: true, UnitCount: 1}), interface{}("1 year")},
+		{interface{}(int64(1000 * 60 * 67 * 24 * 465)), interface{}(Options{Verbose: true, Compact: true, UnitCount: 2}), interface{}("1 year")},
+		{interface{}(int64(1000 * 60 * 67 * 24 * 465)), interface{}(Options{Verbose: true, Compact: true, UnitCount: 3}), interface{}("1 year")},
+	})
+}
 
 
 
