@@ -222,6 +222,40 @@ func TestProperlyRoundsMillisecondsWithSecondsDecimalDigits(t *testing.T) {
 	})
 }
 
+func TestNegativeMillisecondsWithOptions(t *testing.T) {
+	runTests(t, [][]interface{}{
+		{interface{}(int64(-0)), interface{}(Options{}), interface{}("0ms")},
+		{interface{}(float64(-0.1)), interface{}(Options{}), interface{}("-1ms")},
+		{interface{}(int64(-1)), interface{}(Options{}), interface{}("-1ms")},
+		{interface{}(int64(-999)), interface{}(Options{}), interface{}("-999ms")},
+		{interface{}(int64(-1000)), interface{}(Options{}), interface{}("-1s")},
+		{interface{}(int64(-1000 + 400)), interface{}(Options{}), interface{}("-600ms")},
+		{interface{}(int64((-1000 * 2) + 400)), interface{}(Options{}), interface{}("-1.6s")},
+		{interface{}(int64(-13_370)), interface{}(Options{}), interface{}("-13.3s")},
+		{interface{}(int64(-9007199254740991)), interface{}(Options{}), interface{}("-285616y 151d 8h 59m 0.9s")},
+		// With compact option
+		{interface{}(int64(-1000 * 60 * 60 * 999)), interface{}(Options{Compact: true}), interface{}("-41d")},
+		{interface{}(int64(-1000 * 60 * 60 * 24 * 465)), interface{}(Options{Compact: true}), interface{}("-1y")},
+		// With unit-count
+		{interface{}(int64(-1000 * 60 * 67)), interface{}(Options{UnitCount: 2}), interface{}("-1h 7m")},
+		{interface{}(int64(-1000 * 60 * 67 * 24 * 465)), interface{}(Options{UnitCount: 1}), interface{}("-1y")},
+		{interface{}(int64(-1000 * 60 * 67 * 24 * 465)), interface{}(Options{UnitCount: 2}), interface{}("-1y 154d")},
+		// With verbose and secondsDecimalDigits
+		{interface{}(int64((-1000 * 5) - 254)), interface{}(Options{Verbose: true, SecondsDecimalDigits: ptr(4)}), interface{}("-5.2540 seconds")},
+		{interface{}(int64(-33_333)), interface{}(Options{Verbose: true, SecondsDecimalDigits: ptr(4)}), interface{}("-33.3330 seconds")},
+		// With verbose and compact
+		{interface{}(int64(-1000 * 60 * 5)), interface{}(Options{Verbose: true, Compact: true}), interface{}("-5 minutes")},
+		{interface{}(int64(-1000 * 60 * 67)), interface{}(Options{Verbose: true, Compact: true}), interface{}("-1 hour")},
+		{interface{}(int64(-1000 * 60 * 60 * 12)), interface{}(Options{Verbose: true, Compact: true}), interface{}("-12 hours")},
+		// With separateMilliseconds option
+		{interface{}(int64(-1001)), interface{}(Options{SeparateMilliseconds: true}), interface{}("-1s 1ms")},
+		{interface{}(int64(-1234)), interface{}(Options{SeparateMilliseconds: true}), interface{}("-1s 234ms")},
+		// With formatSubMilliseconds option
+		{interface{}(float64(-1.234_567)), interface{}(Options{FormatSubMilliseconds: true}), interface{}("-1ms 234µs 567ns")},
+		{interface{}(float64(-1234.567)), interface{}(Options{FormatSubMilliseconds: true}), interface{}("-1s 234ms 567µs")},
+	})
+}
+
 
 
 
