@@ -7,17 +7,8 @@ Welcome to contribute to this project.
 
 # Installation
 
-```bash
-go get github.com/kics223w1/time-charm
-```
+Need to update
 
 # Usage
 
-```go
-import "github.com/kics223w1/time-charm"
-
-options := timecharm.Options{
-    MillisecondsDecimalDigits: 3,
-}
-fmt.Printf("33.333:  %s\n", timecharm.PrettyMilliseconds(float64(33.333), options))
-```
+Need to update
