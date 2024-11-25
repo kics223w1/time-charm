@@ -163,6 +163,18 @@ func TestVerboseAndUnitCountOptions(t *testing.T) {
 	})
 }
 
+func TestVerboseAndSecondsDecimalDigitsOptions(t *testing.T) {
+	runTests(t, [][]interface{}{
+		{interface{}(int64(1000)), interface{}(Options{Verbose: true, SecondsDecimalDigits: ptr(4)}), interface{}("1 second")},
+		{interface{}(int64(1000 + 400)), interface{}(Options{Verbose: true, SecondsDecimalDigits: ptr(4)}), interface{}("1.4000 seconds")},
+		{interface{}(int64((1000 * 2) + 400)), interface{}(Options{Verbose: true, SecondsDecimalDigits: ptr(4)}), interface{}("2.4000 seconds")},
+		{interface{}(int64((1000 * 5) + 254)), interface{}(Options{Verbose: true, SecondsDecimalDigits: ptr(4)}), interface{}("5.2540 seconds")},
+		{interface{}(int64(33_333)), interface{}(Options{Verbose: true, SecondsDecimalDigits: ptr(4)}), interface{}("33.3330 seconds")},
+	})
+}
+
+
+
 
 
 
