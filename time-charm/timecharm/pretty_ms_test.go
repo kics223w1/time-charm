@@ -152,5 +152,18 @@ func TestVerboseAndCompactOptions(t *testing.T) {
 	})
 }
 
+func TestVerboseAndUnitCountOptions(t *testing.T) {
+	runTests(t, [][]interface{}{
+		{interface{}(int64(1000 * 60)), interface{}(Options{Verbose: true, UnitCount: 1}), interface{}("1 minute")},
+		{interface{}(int64(1000 * 60 * 67)), interface{}(Options{Verbose: true, UnitCount: 1}), interface{}("1 hour")},
+		{interface{}(int64(1000 * 60 * 67)), interface{}(Options{Verbose: true, UnitCount: 2}), interface{}("1 hour 7 minutes")},
+		{interface{}(int64(1000 * 60 * 67 * 24 * 465)), interface{}(Options{Verbose: true, UnitCount: 1}), interface{}("1 year")},
+		{interface{}(int64(1000 * 60 * 67 * 24 * 465)), interface{}(Options{Verbose: true, UnitCount: 2}), interface{}("1 year 154 days")},
+		{interface{}(int64(1000 * 60 * 67 * 24 * 465)), interface{}(Options{Verbose: true, UnitCount: 3}), interface{}("1 year 154 days 6 hours")},
+	})
+}
+
+
+
 
 
