@@ -49,13 +49,6 @@ func PrettyMilliseconds(milliseconds interface{}, options Options) string {
 		msInt64 = -msInt64
 	}
 
-	// Use msFloat64 or msInt64 based on the type
-	if isFloat {
-		fmt.Printf("msFloat64: %f\n", msFloat64)
-	} else {
-		fmt.Printf("msInt64: %d\n", msInt64)
-	}
-
 	if options.ColonNotation {
 		options.Compact = false
 		options.SeparateMilliseconds = false
@@ -165,7 +158,6 @@ func PrettyMilliseconds(milliseconds interface{}, options Options) string {
 			}
 			
 		}  else {
-			fmt.Printf("huy vao else seconds")
 
 			// Calculate seconds
 			var seconds float64
@@ -175,8 +167,9 @@ func PrettyMilliseconds(milliseconds interface{}, options Options) string {
 				seconds = math.Mod(float64(msInt64)/1000, 60)
 			}
 
+			fmt.Printf("huy vao else seconds: %f\n", seconds)
 
-			
+
 			// Determine seconds decimal digits
 			secondsDecimalDigits := 1
 			if options.SecondsDecimalDigits != nil { // Check if it's explicitly set
@@ -199,8 +192,16 @@ func PrettyMilliseconds(milliseconds interface{}, options Options) string {
 				}
 			}
 
+			fmt.Printf("huy vao else seconds 2: %f\n", seconds)
+
+
 			// Add formatted seconds to result
-			add(int64(seconds), "second", "s", &secondsString, &result, options)
+			secondsValue, err := strconv.ParseFloat(secondsString, 64)
+			if err != nil {
+				// handle error, e.g., log or return an empty string
+				return ""
+			}
+			add(secondsValue, "second", "s", &secondsString, &result, options)
 		}
 	}
 
@@ -243,29 +244,44 @@ func floorDecimals(value float64, decimalDigits int) string {
 }
 
 
-func pluralize(word string, count int) string {
+func pluralize(word string, count interface{}) string {
 
-	fmt.Printf("word: %s count: %d\n", word, count)
-	if count == 1 {
+	fmt.Printf("word: %s count: %v\n", word, count)
+
+	// Check if the count is exactly 1 for both int64 and float64
+	if count == int64(1) || count == float64(1) {
 		return word
 	}
 	return word + "s"
 }
 
 func add(value interface{}, long, short string, valueString *string, result *[]string, options Options) {
-	// Convert value to int64 for comparison
-	valueInt64, ok := value.(int64)
-	if !ok {
+	var valueFloat64 float64
+	var valueInt64 int64
+	var isFloat bool
+
+	switch v := value.(type) {
+	case int64:
+		valueInt64 = v
+	case float64:
+		valueFloat64 = v
+		isFloat = true
+	default:
 		return
 	}
 
-	if (len(*result) == 0 || !options.ColonNotation) && valueInt64 == 0 && !(options.ColonNotation && short == "m") {
+	if (len(*result) == 0 || !options.ColonNotation) && ((isFloat && valueFloat64 == 0) || (!isFloat && valueInt64 == 0)) && !(options.ColonNotation && short == "m") {
 		return
 	}
 
 	if valueString == nil {
-		v := fmt.Sprintf("%d", valueInt64)
-		valueString = &v
+		if isFloat {
+			v := fmt.Sprintf("%.0f", valueFloat64)
+			valueString = &v
+		} else {
+			v := fmt.Sprintf("%d", valueInt64)
+			valueString = &v
+		}
 	}
 
 	if options.ColonNotation {
@@ -279,11 +295,15 @@ func add(value interface{}, long, short string, valueString *string, result *[]s
 		}
 		*valueString = strings.Repeat("0", max(0, minLength-wholeDigits)) + *valueString
 	} else {
-
-		fmt.Printf("valueString: %d\n", valueInt64)
-
 		if options.Verbose {
-			*valueString += " " + pluralize(long, int(valueInt64))
+			fmt.Printf("valueFloat64: %f\n", valueFloat64)
+			fmt.Printf("valueInt64: %d\n", valueInt64)
+
+			if isFloat {
+				*valueString += " " + pluralize(long, valueFloat64)
+			} else {
+				*valueString += " " + pluralize(long, valueInt64)
+			}
 		} else {
 			*valueString += short
 		}

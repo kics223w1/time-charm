@@ -95,10 +95,10 @@ func TestHaveAKeepDecimalsOnWholeSecondsOption(t *testing.T) {
 func TestHaveAVerboseOption(t *testing.T) {
 	runTests(t, [][]interface{}{
 		{interface{}(int64(0)), interface{}(Options{Verbose: true}), interface{}("0 milliseconds")},
-		// {interface{}(float64(0.1)), interface{}(Options{Verbose: true}), interface{}("1 milliseconds")},
-		// {interface{}(int64(1)), interface{}(Options{Verbose: true}), interface{}("1 millisecond")},
-		// {interface{}(int64(1000)), interface{}(Options{Verbose: true}), interface{}("1 second")},
-		// {interface{}(int64(1000 + 400)), interface{}(Options{Verbose: true}), interface{}("1.4 seconds")},
+		{interface{}(float64(0.1)), interface{}(Options{Verbose: true}), interface{}("1 millisecond")},
+		{interface{}(int64(1)), interface{}(Options{Verbose: true}), interface{}("1 millisecond")},
+		{interface{}(int64(1000)), interface{}(Options{Verbose: true}), interface{}("1 second")},
+		{interface{}(int64(1000 + 400)), interface{}(Options{Verbose: true}), interface{}("1.4 seconds")},
 	})
 }
 
