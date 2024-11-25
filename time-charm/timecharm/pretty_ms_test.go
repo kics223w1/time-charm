@@ -4,6 +4,10 @@ import (
 	"testing"
 )
 
+func ptr(i int) *int {
+	return &i
+}
+
 func runTests(t *testing.T, cases [][]interface{}) {
 	t.Run("TestPrettyMilliseconds", func(t *testing.T) {
 		for _, testCase := range cases {
@@ -113,6 +117,5 @@ func TestHaveAVerboseOption(t *testing.T) {
 	})
 }
 
-func ptr(i int) *int {
-	return &i
-}
+
+
