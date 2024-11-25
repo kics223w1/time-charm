@@ -200,6 +200,13 @@ func TestCompactOverridesUnitCountOption(t *testing.T) {
 	})
 }
 
+func TestSeparateMillisecondsAndFormatSubMillisecondsOptions(t *testing.T) {
+	runTests(t, [][]interface{}{
+		{interface{}(float64(1010.340_067)), interface{}(Options{SeparateMilliseconds: true, FormatSubMilliseconds: true}), interface{}("1s 10ms 340µs 67ns")},
+		{interface{}(float64(60*1000 + 34 + 0.000_005)), interface{}(Options{SeparateMilliseconds: true, FormatSubMilliseconds: true}), interface{}("1m 34ms 5ns")},
+	})
+}
+
 
 
 
