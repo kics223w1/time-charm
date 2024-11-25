@@ -122,7 +122,17 @@ func TestHaveASeparateMillisecondsOption(t *testing.T) {
 		{interface{}(int64(1100)), interface{}(Options{SeparateMilliseconds: false}), interface{}("1.1s")},
 		{interface{}(int64(1100)), interface{}(Options{SeparateMilliseconds: true}), interface{}("1s 100ms")},
 	})
-}
+} 
+
+
+func TestHaveAFormatSubMillisecondsOption(t *testing.T) {
+	runTests(t, [][]interface{}{
+		{interface{}(float64(0.4)), interface{}(Options{FormatSubMilliseconds: true}), interface{}("400µs")},
+		{interface{}(float64(0.123_571)), interface{}(Options{FormatSubMilliseconds: true}), interface{}("123µs 571ns")},
+		{interface{}(float64(0.123_456_789)), interface{}(Options{FormatSubMilliseconds: true}), interface{}("123µs 456ns")},
+		{interface{}(float64((60 * 60 * 1000) + (23 * 1000) + 433 + 0.123_456)), interface{}(Options{FormatSubMilliseconds: true}), interface{}("1h 23s 433ms 123µs 456ns")},
+	})
+} 
 
 
 

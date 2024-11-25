@@ -104,6 +104,7 @@ func PrettyMilliseconds(milliseconds interface{}, options Options) string {
 
 			add(parsed.Seconds, "second", "s", nil, &result, options)
 
+			
 			if options.FormatSubMilliseconds {
 				add(parsed.Milliseconds, "millisecond", "ms", nil, &result, options)
 				add(parsed.Microseconds, "microsecond", "µs", nil, &result, options)
