@@ -207,6 +207,23 @@ func TestSeparateMillisecondsAndFormatSubMillisecondsOptions(t *testing.T) {
 	})
 }
 
+func TestProperlyRoundsMillisecondsWithSecondsDecimalDigits(t *testing.T) {
+	runTests(t, [][]interface{}{
+		// {interface{}(int64(3 * 60 * 1000)), interface{}(Options{Verbose: true, SecondsDecimalDigits: ptr(0)}), interface{}("3 minutes")},
+		{interface{}(int64((3 * 60 * 1000) - 1)), interface{}(Options{Verbose: true, SecondsDecimalDigits: ptr(0)}), interface{}("2 minutes 59 seconds")},
+		// {interface{}(int64(365 * 24 * 3600 * 1000)), interface{}(Options{Verbose: true, SecondsDecimalDigits: ptr(0)}), interface{}("1 year")},
+		{interface{}(int64((365 * 24 * 3600 * 1000) - 1)), interface{}(Options{Verbose: true, SecondsDecimalDigits: ptr(0)}), interface{}("364 days 23 hours 59 minutes 59 seconds")},
+		// {interface{}(int64(24 * 3600 * 1000)), interface{}(Options{Verbose: true, SecondsDecimalDigits: ptr(0)}), interface{}("1 day")},
+		{interface{}(int64((24 * 3600 * 1000) - 1)), interface{}(Options{Verbose: true, SecondsDecimalDigits: ptr(0)}), interface{}("23 hours 59 minutes 59 seconds")},
+		// {interface{}(int64(3600 * 1000)), interface{}(Options{Verbose: true, SecondsDecimalDigits: ptr(0)}), interface{}("1 hour")},
+		{interface{}(int64((3600 * 1000) - 1)), interface{}(Options{Verbose: true, SecondsDecimalDigits: ptr(0)}), interface{}("59 minutes 59 seconds")},
+		// {interface{}(int64(2 * 3600 * 1000)), interface{}(Options{Verbose: true, SecondsDecimalDigits: ptr(0)}), interface{}("2 hours")},
+		{interface{}(int64((2 * 3600 * 1000) - 1)), interface{}(Options{Verbose: true, SecondsDecimalDigits: ptr(0)}), interface{}("1 hour 59 minutes 59 seconds")},
+	})
+}
+
+
+
 
 
 
