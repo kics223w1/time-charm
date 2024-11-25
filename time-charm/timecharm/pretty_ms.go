@@ -95,9 +95,6 @@ func PrettyMilliseconds(milliseconds interface{}, options Options) string {
 
 	add(parsed.Minutes, "minute", "m", nil, &result, options)
 
-
-	fmt.Printf("parsed.Seconds: %d\n", parsed)
-
 	if !options.HideSeconds {
 
 		if options.SeparateMilliseconds || options.FormatSubMilliseconds || (!options.ColonNotation && (isFloat && msFloat64 < 1000 || !isFloat && msInt64 < 1000)) {
@@ -112,8 +109,6 @@ func PrettyMilliseconds(milliseconds interface{}, options Options) string {
 			} else {
 				millisecondsAndBelow := float64(parsed.Milliseconds) + float64(parsed.Microseconds) / 1000 + float64(parsed.Nanoseconds) / 1e6
 				
-				fmt.Printf("millisecondsAndBelow: %f\n", millisecondsAndBelow)
-
 				millisecondsDecimalDigits := 0
 				if options.MillisecondsDecimalDigits != 0 {
 					millisecondsDecimalDigits = options.MillisecondsDecimalDigits
@@ -132,8 +127,6 @@ func PrettyMilliseconds(milliseconds interface{}, options Options) string {
 				} else {
 					millisecondsString = fmt.Sprintf("%.0f", roundedMilliseconds)
 				}
-
-
 
 				// Check if millisecondsString contains a decimal point
 				if strings.Contains(millisecondsString, ".") {
@@ -167,8 +160,6 @@ func PrettyMilliseconds(milliseconds interface{}, options Options) string {
 				seconds = math.Mod(float64(msInt64)/1000, 60)
 			}
 
-			fmt.Printf("huy vao else seconds: %f\n", seconds)
-
 			// Determine seconds decimal digits
 			secondsDecimalDigits := 1
 			if options.SecondsDecimalDigits != nil { // Check if it's explicitly set
@@ -191,9 +182,6 @@ func PrettyMilliseconds(milliseconds interface{}, options Options) string {
 				}
 			}
 
-			fmt.Printf("huy vao else seconds 2: %f\n", seconds)
-
-
 			// Add formatted seconds to result
 			secondsValue, err := strconv.ParseFloat(secondsString, 64)
 			if err != nil {
@@ -203,8 +191,6 @@ func PrettyMilliseconds(milliseconds interface{}, options Options) string {
 			add(secondsValue, "second", "s", &secondsString, &result, options)
 		}
 	}
-
-	fmt.Printf("result: %v\n", result)
 
 	if len(result) == 0 {
 		if options.Verbose {
@@ -223,30 +209,18 @@ func PrettyMilliseconds(milliseconds interface{}, options Options) string {
 		result = result[:max(options.UnitCount, 1)]
 	}
 
-	fmt.Printf("result: %v\n", result)
-
 	return sign + strings.Join(result, separator)
 }	
 
 func floorDecimals(value float64, decimalDigits int) string {
-
-	fmt.Printf("value: %f decimalDigits: %d\n", value, decimalDigits)
-
 	factor := math.Pow(10, float64(decimalDigits))
 	flooredValue := math.Floor(value*factor+SECOND_ROUNDING_EPSILON) / factor
-
 	rs:= fmt.Sprintf("%.*f", decimalDigits, flooredValue)
-
-	fmt.Printf("rs: %s\n", rs)
-
 	return rs
 }
 
 
 func pluralize(word string, count interface{}) string {
-
-	fmt.Printf("word: %s count: %v\n", word, count)
-
 	// Check if the count is exactly 1 for both int64 and float64
 	if count == int64(1) || count == float64(1) {
 		return word
@@ -295,14 +269,9 @@ func add(value interface{}, long, short string, valueString *string, result *[]s
 		*valueString = strings.Repeat("0", max(0, minLength-wholeDigits)) + *valueString
 	} else {
 		if options.Verbose {
-			fmt.Printf("valueFloat64: %f\n", valueFloat64)
-			fmt.Printf("valueInt64: %d\n", valueInt64)
-
 			if isFloat {
 				*valueString += " " + pluralize(long, valueFloat64)
 			} else {
-
-
 				*valueString += " " + pluralize(long, valueInt64)
 			}
 		} else {
